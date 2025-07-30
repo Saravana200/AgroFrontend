@@ -5,7 +5,6 @@ import 'package:kang/views/MapCoordinatesSelector.dart';
 import 'package:kang/views/SoilMoistureMapPresented.dart';
 import 'package:kang/views/homepage.dart';
 import 'package:kang/views/login.dart';
-import 'package:kang/views/otp.dart';
 import 'package:kang/views/profile.dart';
 import 'package:kang/views/signup.dart';
 import 'package:kang/views/start.dart';
@@ -17,9 +16,8 @@ part 'router.gr.dart';
 class AutoRouter extends _$AutoRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SignupRoute.page, path: "/"),
-        AutoRoute(page: LoginRoute.page, path: "/login"),
-        AutoRoute(page: OtpRoute.page, path: "/otp"),
+        AutoRoute(page: LoginRoute.page, path: "/"),
+        AutoRoute(page: SignupRoute.page, path: "/signup"),
         AutoRoute(page: AridityMapPresentedRoute.page, path: "/ariditymap"),
         AutoRoute(
             page: SoilMoistureMapPresentedRoute.page, path: "/soilmoisturemap"),

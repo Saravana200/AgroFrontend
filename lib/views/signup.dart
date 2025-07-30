@@ -1,60 +1,26 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kang/repos/auth_repo.dart';
 import 'package:kang/router.dart';
-import 'package:kang/services/api_service.dart';
+
+import '../models/models.dart';
+
 // The SignupPage widget
 @RoutePage()
-class SignupPage extends StatelessWidget {
+class SignupPage extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends ConsumerState<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
+
   final TextEditingController _phoneController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
-
-  final ApiService _apiService = ApiService();
-  Future<void> signup({
-    required String name,
-    required String phone,
-    required String email,
-    required String password,
-    required BuildContext context, // Pass BuildContext for UI updates
-  }) async {
-    final ApiService apiService = ApiService();  // Create an instance of ApiService
-
-    final Map<String, dynamic> data = {
-      'name': name,
-      'phone': phone,
-      'email': email,
-      'password': password,
-    };
-
-    try {
-      // Send POST request
-      final response = await apiService.postData('/auth/signup', data);
-
-      print('Response: $response');
-      if (response['status'] == 'failed') {
-        // Show the reason from the backend if signup failed
-        final String reason = response['reason'] ?? 'Signup failed, please try again.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(reason)),
-        );
-      } else {
-        print('Signup Response: $response');
-        // Navigate to OTP page (if signup is successful) and pass all data
-        context.router.replace(OtpRoute(
-          name: name,
-          phone: phone,
-          email: email,
-          password: password,
-        ));
-      }
-    } catch (e) {
-      print('Error during signup: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Signup failed: $e")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,20 +80,17 @@ class SignupPage extends StatelessWidget {
                 final String email = _emailController.text;
                 final String password = _passwordController.text;
 
+                final loginReq = LoginRequest(name: name, password: password);
                 try {
-                  // Call signup function
-                  await signup(
-                    name: name,
-                    phone: phone,
-                    email: email,
-                    password: password,
-                    context: context, // Pass BuildContext for UI updates
-                  );
+                  final notifier = ref.read(genericNotifierProvider.notifier);
+                  await notifier.signUp(loginReq);
+                  context.router.replace(MyAppRoute());
                 } catch (e) {
-                  // Handle any unexpected errors
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Signup failed: $e")),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Login failed: $e"),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ));
                 }
               },
               child: Text("Sign Up"),

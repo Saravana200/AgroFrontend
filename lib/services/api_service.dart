@@ -48,27 +48,3 @@ class ApiService {
   }
 }
 
-// final aridityImageProvider = FutureProvider.family<Uint8List, LatLng>((ref, position) async {
-//   final url = Uri.https("agrofusionnode.share.zrok.io", "/map/getMap", {
-//     "lat": position.latitude.toString(),
-//     "long": position.longitude.toString(),
-//   });
-//
-//   try {
-//     final response = await http.get(
-//       url,
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'image/png',
-//       },
-//     );
-//
-//     if (response.statusCode == 200) {
-//       return response.bodyBytes;
-//     } else {
-//       throw Exception('Failed to fetch image. Status: ${response.statusCode}');
-//     }
-//   } catch (e) {
-//     throw Exception('Error fetching image: $e');
-//   }
-// });

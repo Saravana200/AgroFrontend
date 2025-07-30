@@ -49,18 +49,6 @@ abstract class _$AutoRouter extends RootStackRouter {
         child: const MyAppPage(),
       );
     },
-    OtpRoute.name: (routeData) {
-      final args = routeData.argsAs<OtpRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: OtpPage(
-          name: args.name,
-          phone: args.phone,
-          email: args.email,
-          password: args.password,
-        ),
-      );
-    },
     ProfileRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -179,53 +167,6 @@ class MyAppRoute extends PageRouteInfo<void> {
   static const String name = 'MyAppRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [OtpPage]
-class OtpRoute extends PageRouteInfo<OtpRouteArgs> {
-  OtpRoute({
-    required String name,
-    required String phone,
-    required String email,
-    required String password,
-    List<PageRouteInfo>? children,
-  }) : super(
-          OtpRoute.name,
-          args: OtpRouteArgs(
-            name: name,
-            phone: phone,
-            email: email,
-            password: password,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'OtpRoute';
-
-  static const PageInfo<OtpRouteArgs> page = PageInfo<OtpRouteArgs>(name);
-}
-
-class OtpRouteArgs {
-  const OtpRouteArgs({
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.password,
-  });
-
-  final String name;
-
-  final String phone;
-
-  final String email;
-
-  final String password;
-
-  @override
-  String toString() {
-    return 'OtpRouteArgs{name: $name, phone: $phone, email: $email, password: $password}';
-  }
 }
 
 /// generated route for
