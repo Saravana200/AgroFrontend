@@ -46,7 +46,7 @@ class GenericStateNotifier extends AsyncNotifier<String> {
     } on DioException catch (e, st) {
       final errorMessage =
           e.response?.data["detail"] ?? "Unknown error occurred";
-      print('Error fetching image: $errorMessage');
+      print('Error fetching token: $errorMessage');
       state = AsyncError(e, st);
       throw Exception(errorMessage);
     } catch (e, st) {

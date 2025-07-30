@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:kang/router.dart';
 
@@ -18,6 +19,7 @@ class _MyAppPageState extends State<MyAppPage> {
       routes: const [
         HomeRoute(),
         MapCoordinatesSelectorRoute(),
+        ChatRoute(),
         ProfileRoute()
       ],
       builder: (context, child) {
@@ -50,6 +52,8 @@ class _MyAppPageState extends State<MyAppPage> {
                     icon: Icon(Icons.agriculture), label: "home"),
                 NavigationDestination(
                     icon: Icon(Icons.travel_explore_rounded), label: "search"),
+                NavigationDestination(
+                    icon: Icon(FluentIcons.chat_20_filled), label: "chat"),
                 NavigationDestination(
                     icon: Icon(Icons.person), label: "profile"),
               ],

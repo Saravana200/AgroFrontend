@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kang/views/AridityMapPresented.dart';
+import 'package:kang/views/ChatPage.dart';
 import 'package:kang/views/MapCoordinatesSelector.dart';
 import 'package:kang/views/SoilMoistureMapPresented.dart';
 import 'package:kang/views/homepage.dart';
@@ -28,6 +29,7 @@ class AutoRouter extends _$AutoRouter {
           children: [
             AutoRoute(
                 page: MapCoordinatesSelectorRoute.page, path: "displayImage"),
+            AutoRoute(page: ChatRoute.page, path: "chat"),
             AutoRoute(page: ProfileRoute.page, path: "profile"),
             AutoRoute(page: HomeRoute.page, path: "welcome"),
           ],
