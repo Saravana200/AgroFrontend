@@ -47,7 +47,7 @@ class _SliderBarState extends State<SliderBar> {
             Text(
               widget.value.toStringAsFixed(1) + widget.description,
               // Convert double value to string
-              style: theme.textTheme.titleMedium,
+              style: theme.textTheme.bodyLarge,
             )
           ],
         );

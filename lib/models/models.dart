@@ -73,3 +73,4 @@ class WeatherResponse {
   /// Method for serialization
   Map<String, dynamic> toJson() => _$WeatherResponseToJson(this);
 }
+

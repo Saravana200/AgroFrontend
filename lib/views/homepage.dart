@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kang/models/models.dart';
 import 'package:kang/repos/repository.dart';
 import 'package:kang/widgets/slider.dart';
@@ -79,23 +80,45 @@ class _HomePageState extends ConsumerState<HomePage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 150,
+        toolbarHeight: size.height * 0.12,
         backgroundColor: theme.colorScheme.surface,
         leadingWidth: 100,
         leading: Padding(
           padding: const EdgeInsets.symmetric(vertical: .0),
           child: SizedBox(
             width: 50, // Set your desired width for the image
-            height: 30, // Set your desired height for the image
+            height: 20, // Set your desired height for the image
             child: Image.asset(
               "assets/agrifusion.jpg",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           ),
         ),
-        title: Text(
-          'Good Morning',
-          style: theme.textTheme.headlineLarge,
+        title: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  height: 1.05,
+                  letterSpacing: -0.2,
+                ),
+            children: [
+              TextSpan(
+                text: 'Farm Smart,\n',
+                style: GoogleFonts.greatVibes(
+                    fontSize: 42,
+                    letterSpacing: 0.8,
+                    fontWeight: FontWeight.w500,
+                    color: theme.colorScheme.primary),
+              ),
+              TextSpan(
+                  text: ' Not Hard.',
+                  style: GoogleFonts.dancingScript(
+                      fontSize: 32,
+                      letterSpacing: 0.3,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.secondary)),
+            ],
+          ),
         ),
         centerTitle: true,
         actions: [
@@ -114,17 +137,30 @@ class _HomePageState extends ConsumerState<HomePage> {
           )
         ],
       ),
+      backgroundColor: Color.fromRGBO(35, 156, 30, 0.18),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(
+              height: size.height * 0.04,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 34),
                   height: size.height * 0.19,
                   decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        offset:
+                            const Offset(0, 4), // Position of the shadow (x, y)
+                      ),
+                    ],
                     borderRadius: BorderRadius.circular(16),
-                    color: theme.colorScheme.outlineVariant,
+                    color: Color.fromRGBO(237, 241, 237, 1),
                   ),
                   child: call.when(
                     skipLoadingOnRefresh: false,
