@@ -105,7 +105,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               TextSpan(
                 text: 'Farm Smart,\n',
                 style: GoogleFonts.greatVibes(
-                    fontSize: 42,
+                    fontSize: 32,
                     letterSpacing: 0.8,
                     fontWeight: FontWeight.w500,
                     color: theme.colorScheme.primary),
@@ -113,7 +113,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               TextSpan(
                   text: ' Not Hard.',
                   style: GoogleFonts.dancingScript(
-                      fontSize: 32,
+                      fontSize: 28,
                       letterSpacing: 0.3,
                       fontWeight: FontWeight.w500,
                       color: theme.colorScheme.secondary)),
