@@ -1,5 +1,3 @@
-import 'dart:developer'; // For debugging
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,33 +13,37 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final FlutterSecureStorage storage = FlutterSecureStorage();
   final ApiService apiService = ApiService();
-  Map<String, dynamic>? _userData;
-  bool _isLoading = true;
+  Map<String, dynamic>? _userData = {
+    "name": "test",
+    "email": "test@gmail.com",
+    "phone": "9121211211"
+  };
+  bool _isLoading = false;
 
   // Function to fetch user info
-  Future<void> fetchUserInfo() async {
-    try {
-      String? accessToken = await storage.read(key: 'accessToken'); // Get token
-      log('AccessToken: $accessToken', name: 'ProfilePageDebug');
-
-      final response = await apiService.fetchData(
-        '/user',
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-
-      setState(() {
-        _userData = response['user']; // Extract user data
-        _isLoading = false;
-      });
-    } catch (e) {
-      log('Error: $e', name: 'ProfilePageDebug');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+  // Future<void> fetchUserInfo() async {
+  //   try {
+  //     String? accessToken = await storage.read(key: 'accessToken'); // Get token
+  //     log('AccessToken: $accessToken', name: 'ProfilePageDebug');
+  //
+  //     final response = await apiService.fetchData(
+  //       '/user',
+  //       headers: {
+  //         'Authorization': 'Bearer $accessToken',
+  //       },
+  //     );
+  //
+  //     setState(() {
+  //       _userData = response['user']; // Extract user data
+  //       _isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     log('Error: $e', name: 'ProfilePageDebug');
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   // Logout function
   Future<void> logout() async {
@@ -66,7 +68,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    fetchUserInfo(); // Fetch user data when the widget is initialized
   }
 
   @override

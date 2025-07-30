@@ -4,38 +4,44 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:kang/models/models.dart';
+import 'package:kang/repos/providers.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final dioProvider =
-    Provider((ref) => Dio(BaseOptions(baseUrl: "http://52.66.253.251:8036")));
 
 class ApiServiceProvider {
   final dio;
 
   ApiServiceProvider(this.dio);
 
-  Future<Test> request(LatLng position) async {
+  Future<WeatherResponse> WeatherRequest(LatLng position) async {
     try {
       final response = await dio.post('/weather',
           data: {"lat": position.latitude, "long": position.longitude});
-      if (response.statusCode == 200) {
-        print(response.data.toString());
-        Test data = Test.fromJson(response.data);
-        return data;
-      }
+      print(response.data.toString());
+      WeatherResponse data = WeatherResponse.fromJson(response.data);
+      return data;
     } on DioException catch (e) {
-      if (e.response != null) {
-        print(e.response!.data);
-        print(e.response!.headers);
-        print(e.response!.requestOptions);
-      } else {
-        print(e.requestOptions);
-        print(e.message);
-      }
-      throw e;
+      final errorMessage =
+          e.response?.data["detail"] ?? "Unknown error occurred";
+      print('Error fetching image: $errorMessage');
+      throw Exception(errorMessage);
     }
-    return Test(greeting: "error");
+  }
+
+  Future<Test> request(LatLng position) async {
+    try {
+      final response = await dio.post('/chat/weather',
+          data: {"lat": position.latitude, "long": position.longitude});
+      print(response.data.toString());
+      Test data = Test.fromJson(response.data);
+      return data;
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["detail"] ?? "Unknown error occurred";
+      print('Error fetching image: $errorMessage');
+      throw Exception(errorMessage);
+    }
   }
 
   Future<Uint8List?> getImage({required LatLng position}) async {
@@ -85,21 +91,28 @@ class ApiServiceProvider {
 
 FutureProviderFamily<Test, LatLng> apiServiceProvider =
     FutureProvider.family<Test, LatLng>((ref, position) async {
-  var dio = ref.watch(dioProvider);
+  var dio = await ref.read(dioProvider);
   var apiService = ApiServiceProvider(dio);
   return await apiService.request(position);
 });
 
+FutureProviderFamily<WeatherResponse, LatLng> weatherServiceProvider =
+    FutureProvider.family<WeatherResponse, LatLng>((ref, position) async {
+  var dio = await ref.read(dioProvider);
+  var apiService = ApiServiceProvider(dio);
+  return await apiService.WeatherRequest(position);
+});
+
 FutureProviderFamily<Uint8List?, LatLng> aridityImageServiceProvider =
     FutureProvider.family<Uint8List?, LatLng>((ref, position) async {
-  var dio = ref.watch(dioProvider);
+  var dio = await ref.read(dioProvider);
   var apiService = ApiServiceProvider(dio);
   return await apiService.getImageAridity(position: position);
 });
 
 FutureProviderFamily<Uint8List?, LatLng> imageServiceProvider =
     FutureProvider.family<Uint8List?, LatLng>((ref, position) async {
-  var dio = ref.watch(dioProvider);
+  var dio = await ref.read(dioProvider);
   var apiService = ApiServiceProvider(dio);
   return await apiService.getImage(position: position);
 });
