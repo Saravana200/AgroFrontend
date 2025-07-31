@@ -48,3 +48,27 @@ Map<String, dynamic> _$WeatherResponseToJson(WeatherResponse instance) =>
       'humidity': instance.humidity,
       'temperature': instance.temperature,
     };
+
+NewsArticle _$NewsArticleFromJson(Map<String, dynamic> json) => NewsArticle(
+      title: json['title'] as String,
+      url: json['url'] as String,
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$NewsArticleToJson(NewsArticle instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'url': instance.url,
+      'description': instance.description,
+    };
+
+NewsResponse _$NewsResponseFromJson(Map<String, dynamic> json) => NewsResponse(
+      articles: (json['articles'] as List<dynamic>)
+          .map((e) => NewsArticle.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$NewsResponseToJson(NewsResponse instance) =>
+    <String, dynamic>{
+      'articles': instance.articles,
+    };

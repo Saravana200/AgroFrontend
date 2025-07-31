@@ -12,7 +12,8 @@ final dioProvider = Provider((ref) async {
     'Content-Type': 'application/json',
     if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
   };
-  return Dio(BaseOptions(baseUrl: "http://10.0.2.2:8036", headers: headers));
+  return Dio(
+      BaseOptions(baseUrl: "http://15.206.195.192:8036", headers: headers));
 });
 
 final storageProvider = Provider((ref) => FlutterSecureStorage());
