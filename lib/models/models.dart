@@ -74,3 +74,34 @@ class WeatherResponse {
   Map<String, dynamic> toJson() => _$WeatherResponseToJson(this);
 }
 
+// ------------------ NewsArticle Model ------------------
+@JsonSerializable()
+class NewsArticle {
+  final String title;
+  final String url;
+  final String? description;
+
+  NewsArticle({
+    required this.title,
+    required this.url,
+    this.description,
+  });
+
+  factory NewsArticle.fromJson(Map<String, dynamic> json) =>
+      _$NewsArticleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NewsArticleToJson(this);
+}
+
+// ------------------ NewsResponse Model ------------------
+@JsonSerializable()
+class NewsResponse {
+  final List<NewsArticle> articles;
+
+  NewsResponse({required this.articles});
+
+  factory NewsResponse.fromJson(Map<String, dynamic> json) =>
+      _$NewsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NewsResponseToJson(this);
+}

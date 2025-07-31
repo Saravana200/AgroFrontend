@@ -1,49 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kang/repos/repository.dart';
 import 'package:kang/router.dart';
 import 'package:kang/services/api_service.dart';
 
 @RoutePage()
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends ConsumerState<ProfilePage> {
   final FlutterSecureStorage storage = FlutterSecureStorage();
   final ApiService apiService = ApiService();
-  Map<String, dynamic>? _userData = {
-    "name": "test",
-    "email": "test@gmail.com",
-    "phone": "9121211211"
-  };
-  bool _isLoading = false;
-
-  // Function to fetch user info
-  // Future<void> fetchUserInfo() async {
-  //   try {
-  //     String? accessToken = await storage.read(key: 'accessToken'); // Get token
-  //     log('AccessToken: $accessToken', name: 'ProfilePageDebug');
-  //
-  //     final response = await apiService.fetchData(
-  //       '/user',
-  //       headers: {
-  //         'Authorization': 'Bearer $accessToken',
-  //       },
-  //     );
-  //
-  //     setState(() {
-  //       _userData = response['user']; // Extract user data
-  //       _isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     log('Error: $e', name: 'ProfilePageDebug');
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
 
   // Logout function
   Future<void> logout() async {
@@ -72,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final call = ref.watch(userServiceProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -82,13 +54,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _userData == null
-          ? Center(child: Text('Failed to load user data'))
-          : Container(
-        color: Theme.of(context).colorScheme.primary,
-        child: Center(
+        body: call.when(
+          data: (data) => Container(
+            color: Theme.of(context).colorScheme.primary,
+            child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -97,48 +66,69 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundColor: Theme.of(context).colorScheme.onSecondary,
                 child: CircleAvatar(
                   radius: 65,
-                  backgroundImage: _userData!['profilePicture'] != null &&
-                      _userData!['profilePicture']!.isNotEmpty
-                      ? NetworkImage(_userData!['profilePicture'])
-                      : AssetImage('assets/default_profile.png')
-                  as ImageProvider,
-                ),
-              ),
+                      backgroundImage: NetworkImage(
+                        'https://i.pravatar.cc/300?img=12', // Randomly generated human avatar
+                      ),
+                    ),
+                  ),
               SizedBox(height: 20),
               Text(
-                _userData!['name'] ?? 'Unknown',
-                style: TextStyle(
+                    data,
+                    style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                _userData!['email'] ?? 'No email provided',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onPrimary
-                      .withAlpha(140),
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                _userData!['phone'] ?? 'No phone number provided',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onPrimary
-                      .withAlpha(140),
-                ),
-              ),
             ],
           ),
         ),
-      ),
-    );
+          ),
+          error: (error, stackTrace) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline,
+                      size: 48, color: Colors.redAccent),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Failed to load user data',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    error.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => ref.refresh(newsServiceProvider.future),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          loading: () => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text(
+                  'Loading user data...',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }

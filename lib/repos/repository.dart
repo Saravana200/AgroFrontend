@@ -14,6 +14,32 @@ class ApiServiceProvider {
 
   ApiServiceProvider(this.dio);
 
+  Future<NewsResponse> NewsRequest() async {
+    try {
+      final response = await dio.get('/news', data: {});
+      NewsResponse data = NewsResponse.fromJson(response.data);
+      return data;
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["detail"] ?? "Unknown error occurred";
+      print('Error fetching image: $errorMessage');
+      throw Exception(errorMessage);
+    }
+  }
+
+  Future<String> UserRequest() async {
+    try {
+      final response = await dio.get('/user-details', data: {});
+      String data = response.data["name"];
+      return data;
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["detail"] ?? "Unknown error occurred";
+      print('Error fetching image: $errorMessage');
+      throw Exception(errorMessage);
+    }
+  }
+
   Future<WeatherResponse> WeatherRequest(LatLng position) async {
     try {
       final response = await dio.post('/weather',
@@ -101,6 +127,20 @@ FutureProviderFamily<WeatherResponse, LatLng> weatherServiceProvider =
   var dio = await ref.read(dioProvider);
   var apiService = ApiServiceProvider(dio);
   return await apiService.WeatherRequest(position);
+});
+
+FutureProvider<NewsResponse> newsServiceProvider =
+    FutureProvider<NewsResponse>((ref) async {
+  var dio = await ref.read(dioProvider);
+  var apiService = ApiServiceProvider(dio);
+  return await apiService.NewsRequest();
+});
+
+FutureProvider<String> userServiceProvider =
+    FutureProvider<String>((ref) async {
+  var dio = await ref.read(dioProvider);
+  var apiService = ApiServiceProvider(dio);
+  return await apiService.UserRequest();
 });
 
 FutureProviderFamily<Uint8List?, LatLng> aridityImageServiceProvider =

@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kang/models/models.dart';
 import 'package:kang/repos/repository.dart';
+import 'package:kang/widgets/NewsWidgetGenerator.dart';
 import 'package:kang/widgets/slider.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -120,6 +121,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               LatLng(position.latitude, position.longitude),
             ),
           );
+    final newsCall = ref.watch(newsServiceProvider);
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
@@ -133,7 +135,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             width: 50, // Set your desired width for the image
             height: 20, // Set your desired height for the image
             child: Image.asset(
-              "assets/agrifusion.jpg",
+              "assets/agrifusion.png",
               fit: BoxFit.cover,
             ),
           ),
@@ -300,11 +302,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       ),
                                       const SizedBox(width: 8),
                                       TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           getLocation();
-                                          ref.refresh(weatherServiceProvider(
-                                              new LatLng(position.latitude,
-                                                  position.longitude)));
+                                          await ref.refresh(
+                                              weatherServiceProvider(new LatLng(
+                                                      position.latitude,
+                                                      position.longitude))
+                                                  .future);
                                         },
                                         child: const Text('Retry'),
                                       ),
@@ -328,38 +332,127 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   )),
             ),
-            const SizedBox(height: 40),
-            Card(
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Container(
-                width: 300,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const ListTile(
-                      leading: CircleAvatar(child: Text('G')),
-                      title: Text('Soil'),
-                      trailing: Icon(Icons.more_vert),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: size.height * 0.55,
+              child: newsCall.when(
+                skipLoadingOnRefresh: false,
+                data: (response) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await ref.refresh(newsServiceProvider.future);
+                    },
+                    child: Scrollbar(
+                      radius: const Radius.circular(12),
+                      thickness: 6,
+                      child: Container(
+                        width: size.width * 0.96,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: const Offset(
+                                  0, 4), // Position of the shadow (x, y)
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(16),
+                          color: Color.fromRGBO(237, 241, 237, 1),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 1.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 17),
+                              Text(
+                                'News Report',
+                                style: GoogleFonts.specialElite(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 4.5,
+                                  color: Color.fromRGBO(
+                                      57, 24, 2, 0.5058823529411764),
+                                ),
+                              ),
+                              const SizedBox(height: 9),
+                              SizedBox(
+                                height: size.height * 0.45,
+                                child: NewsWidgetGenerator(response: response),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Image.network(
-                      'https://i.natgeofe.com/k/f466cabf-659a-4440-b221-e7c1d80af6f5/greenland-ice_16x9.jpg?w=1200',
-                      // Replace with your image URL
-                      fit: BoxFit.fill,
-                      width: 250,
-                      height: 150,
+                  );
+                },
+                error: (error, stackTrace) => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 48, color: Colors.redAccent),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Failed to load news',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          error.toString(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () =>
+                              ref.refresh(newsServiceProvider.future),
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    const Text('Glaciers'),
-                    const Text('Greenland'),
-                  ],
+                  ),
+                ),
+                loading: () => Center(
+                  child: Container(
+                    width: size.width * 0.96,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                          offset: const Offset(
+                              0, 4), // Position of the shadow (x, y)
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16),
+                      color: Color.fromRGBO(237, 241, 237, 1),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text(
+                          'Loading latest agriculture news...',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
