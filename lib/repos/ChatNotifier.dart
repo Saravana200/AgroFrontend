@@ -19,7 +19,7 @@ class ChatStateNotifier extends AsyncNotifier<List<ChatMessage>> {
         id: id, text: "Awaiting for response.....", isUser: false, time: now);
     state = AsyncData([...current, userMessage, awaitMessage]);
     try {
-      final dio = await ref.read(dioProvider);
+      final dio = await ref.read(dioProvider.future);
       final response = await dio.post('/chat', data: {"text": message});
       String content = response.data["reply"];
       final reply = ChatMessage(

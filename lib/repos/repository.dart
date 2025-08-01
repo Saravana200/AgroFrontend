@@ -117,42 +117,42 @@ class ApiServiceProvider {
 
 FutureProviderFamily<Test, LatLng> apiServiceProvider =
     FutureProvider.family<Test, LatLng>((ref, position) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.request(position);
 });
 
 FutureProviderFamily<WeatherResponse, LatLng> weatherServiceProvider =
     FutureProvider.family<WeatherResponse, LatLng>((ref, position) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.WeatherRequest(position);
 });
 
 FutureProvider<NewsResponse> newsServiceProvider =
     FutureProvider<NewsResponse>((ref) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.NewsRequest();
 });
 
 FutureProvider<String> userServiceProvider =
     FutureProvider<String>((ref) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.UserRequest();
 });
 
 FutureProviderFamily<Uint8List?, LatLng> aridityImageServiceProvider =
     FutureProvider.family<Uint8List?, LatLng>((ref, position) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.getImageAridity(position: position);
 });
 
 FutureProviderFamily<Uint8List?, LatLng> imageServiceProvider =
     FutureProvider.family<Uint8List?, LatLng>((ref, position) async {
-  var dio = await ref.read(dioProvider);
+  var dio = await ref.read(dioProvider.future);
   var apiService = ApiServiceProvider(dio);
   return await apiService.getImage(position: position);
 });

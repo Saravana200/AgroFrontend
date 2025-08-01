@@ -89,7 +89,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   String password = _passwordController.text.trim();
                   final loginReq = LoginRequest(name: name, password: password);
                   try {
-                    final notifier = ref.read(genericNotifierProvider.notifier);
+                    final notifier =
+                        await ref.read(genericNotifierProvider.notifier);
                     await notifier.login(loginReq);
                     context.router.replace(MyAppRoute());
                   } catch (e) {

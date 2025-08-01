@@ -3,8 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kang/repos/repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final dioProvider = Provider((ref) async {
-  final storage = ref.read(storageProvider);
+final dioProvider = FutureProvider<Dio>((ref) async {
+  final storage = await ref.read(storageProvider);
   final token = await storage.read(key: 'token');
 
   final headers = <String, String>{
