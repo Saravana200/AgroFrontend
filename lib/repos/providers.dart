@@ -13,7 +13,7 @@ final dioProvider = FutureProvider<Dio>((ref) async {
     if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
   };
   return Dio(
-      BaseOptions(baseUrl: "http://15.206.195.192:8036", headers: headers));
+      BaseOptions(baseUrl: "http://13.235.77.162:8036", headers: headers));
 });
 
 final storageProvider = Provider((ref) => FlutterSecureStorage());

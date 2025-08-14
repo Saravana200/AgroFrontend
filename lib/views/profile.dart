@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kang/repos/providers.dart';
 import 'package:kang/repos/repository.dart';
 import 'package:kang/router.dart';
 import 'package:kang/services/api_service.dart';
@@ -21,6 +22,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     try {
       // Clear all stored data (access token, email, name, phone)
       await storage.deleteAll();
+      await ref.refresh(dioProvider.future);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Logged out successfully!")),
@@ -39,6 +41,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    ref.refresh(userServiceProvider);
   }
 
   @override

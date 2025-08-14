@@ -41,8 +41,9 @@ class GenericStateNotifier extends AsyncNotifier<String> {
       final response = await dio.post('/signup', data: request.toJson());
       LoginResponse contentType = LoginResponse.fromJson(response.data);
       var token = contentType.token;
-      final storage = ref.read(storageProvider);
+      final storage = await ref.read(storageProvider);
       await storage.write(key: 'token', value: token);
+      await ref.refresh(dioProvider.future);
       state = AsyncData(token);
     } on DioException catch (e, st) {
       final errorMessage =
